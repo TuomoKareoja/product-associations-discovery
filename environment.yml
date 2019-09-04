@@ -1,0 +1,19 @@
+name: base-environment
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3
+  - click
+  - Sphinx
+  - pytest
+  - coverage
+  - pandas
+  - numpy
+  - matplotlib
+  - seaborn
+  - scikit-learn
+  - black
+  - pylint
+  - python-dotenv
+  - jupyter
