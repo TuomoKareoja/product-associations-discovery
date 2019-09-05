@@ -75,10 +75,6 @@ target/
 # Jupyter NB Checkpoints
 .ipynb_checkpoints/
 
-# exclude exploratory notebooks
-notebooks/exploratory/*
-!notebooks/exploratory/.gitkeep
-
 # exclude processed data from source control by default, but keep the folders in
 /data/clean/*
 /data/interim/*
