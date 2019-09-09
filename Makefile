@@ -23,26 +23,6 @@ update_environment:
 export_environment:
 	conda env export --name $(PROJECT_NAME) | grep -v "^prefix: " > environment.yml
 
-## Fetch, clean and process the data
-data:
-	src/data/make_dataset.py
-
-## Train models for comparison
-data:
-	src/data/train_models_comparison.py
-
-## Train final models
-data:
-	src/data/train_models_final.py
-
-## Predictions with training data for comparisons
-data:
-	src/data/predict_comparison.py
-
-## Make final predictions
-data:
-	src/data/predict_final.py
-
 ## Delete all compiled Python files
 clean:
 	find . -type f -name "*.py[co]" -delete
