@@ -44,25 +44,56 @@ data_orders.query("state == 'Completed'", inplace=True)
 data_items_agg = (
     data_items[["id_order", "total_price", "product_quantity"]]
     .groupby(["id_order"])
-    .agg({"total_price": ['sum'], "product_quantity": ['sum', 'count']})
+    .agg(
+        {
+            "total_price": [("total_price", "sum")],
+            "product_quantity": [
+                ("product_quantity", "sum"),
+                ("n_unique_products", "count"),
+            ],
+        }
+    )
 )
+
+data_items_agg.columns = data_items_agg.columns.get_level_values(1)
 
 #%%
 
-# Lets combine the orders and items with an inner join
+# Lets combine items to completed orders with a left join
 data_orders_items = data_orders.join(data_items_agg, how="left", on="id_order")
 
-data_order_items.columns = [
+data_orders_items.columns = [
     "id_order",
     "created_date",
     "state",
     "total_paid",
     "total_items_price",
     "total_items_quantity",
+    "n_unique_products",
 ]
 
+# dropping orders where there are less than 2 unique products
+data_orders_items.query("n_unique_products >= 2", inplace=True)
+
+# fixing datatypes
+data_orders_items[
+    "total_items_quantity"
+] = data_orders_items.total_items_quantity.astype(int)
+data_orders_items["n_unique_products"] = data_orders_items.n_unique_products.astype(int)
 
 #%%
 
+# The dataframe we now have has the same number of rows that the transaction data has
+# and if we look at the number of unique products, it seems that the ordering
+# of the transactions is identical. This is not unexpected as the transaction dataset was
+# created from order and items dataset just like we did here.
+
+data_orders_items.head()
+data_orders_items.shape
 
 #%%
+
+# combining the columns to the transaction data saving the data to processed folder
+data_trans_enriched = pd.concat([data_trans, data_orders_items], axis=1)
+processed_path = os.path.join("data", "processed", "trans_enriched.csv")
+data_trans_enriched.to_csv(processed_path, sep=";")

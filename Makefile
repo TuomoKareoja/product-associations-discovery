@@ -23,6 +23,10 @@ update_environment:
 export_environment:
 	conda env export --name $(PROJECT_NAME) | grep -v "^prefix: " > environment.yml
 
+## Combine item and order information to transactions
+data:
+	python ./notebooks/exploratory/combine_transactions_with_other_data.py
+
 ## Delete all compiled Python files
 clean:
 	find . -type f -name "*.py[co]" -delete
