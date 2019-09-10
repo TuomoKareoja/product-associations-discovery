@@ -96,4 +96,4 @@ data_orders_items.shape
 # combining the columns to the transaction data saving the data to processed folder
 data_trans_enriched = pd.concat([data_trans, data_orders_items], axis=1)
 processed_path = os.path.join("data", "processed", "trans_enriched.csv")
-data_trans_enriched.to_csv(processed_path, sep=";")
+data_trans_enriched.to_csv(processed_path, sep=";", index=False)
