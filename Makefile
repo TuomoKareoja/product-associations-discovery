@@ -23,9 +23,10 @@ update_environment:
 export_environment:
 	conda env export --name $(PROJECT_NAME) | grep -v "^prefix: " > environment.yml
 
-## Combine item and order information to transactions
+## Combine item and order information to transactions and read categories from pdf
 data:
 	python ./notebooks/exploratory/combine_transactions_with_other_data.py
+	python ./notebooks/exploratory/read_product_cat_from_pdf.py
 
 ## Delete all compiled Python files
 clean:
