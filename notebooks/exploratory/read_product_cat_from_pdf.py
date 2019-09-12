@@ -28,5 +28,5 @@ data_categories["level1"].value_counts()
 #%%
 
 # saving data
-processed_path = os.path.join("data", "processed", "product_categories.csv")
-data_categories.to_csv(processed_path, index=False)
+file_path = os.path.join("data", "clean", "product_categories.csv")
+data_categories.to_csv(file_path, index=False)
