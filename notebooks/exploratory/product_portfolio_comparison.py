@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import datetime
+import copy
 from IPython.core.interactiveshell import InteractiveShell
 
 # Setting styles
@@ -219,10 +220,10 @@ figures_path = os.path.join("reports", "figures")
 # plotting only categories where it forms at least 2 % of one companies sales
 
 blackwell_categories_price = data_sales[
-    (data_sales.Company == "Blackwell") & (data_sales.price_perc >= 2)
+    (data_sales.Company == "Blackwell") & (data_sales.price_perc >= 1)
 ].category
 electronindex_categories_price = data_sales[
-    (data_sales.Company == "Electronindex") & (data_sales.price_perc >= 2)
+    (data_sales.Company == "Electronindex") & (data_sales.price_perc >= 1)
 ].category
 
 price_cats_to_plot = (
@@ -232,10 +233,10 @@ price_cats_to_plot = (
 )
 
 blackwell_categories_vol = data_sales[
-    (data_sales.Company == "Blackwell") & (data_sales.volume_perc >= 2)
+    (data_sales.Company == "Blackwell") & (data_sales.volume_perc >= 1)
 ].category
 electronindex_categories_vol = data_sales[
-    (data_sales.Company == "Electronindex") & (data_sales.volume_perc >= 2)
+    (data_sales.Company == "Electronindex") & (data_sales.volume_perc >= 1)
 ].category
 
 volume_cats_to_plot = (
@@ -276,6 +277,49 @@ plt.legend(loc=1)
 plt.show()
 plt.savefig(
     os.path.join(figures_path, "sales_distribution_of_product_categories_by_volume.png")
+)
+
+price_cats_to_plot_no_accessories = price_cats_to_plot.copy()
+price_cats_to_plot_no_accessories.remove("Accessories")
+volume_cats_to_plot_no_accessories = volume_cats_to_plot.copy()
+volume_cats_to_plot_no_accessories.remove("Accessories")
+
+ax = sns.barplot(
+    "category",
+    "price_perc",
+    hue="Company",
+    data=data_sales[data_sales.category.isin(price_cats_to_plot_no_accessories)],
+)
+ax.set_xlabel("Product Category")
+ax.set(ylabel="Percent of Sales")
+plt.title("Product Categories as Percent of Sales by Price")
+plt.xticks(rotation=90)
+plt.legend(loc=1)
+plt.show()
+plt.savefig(
+    os.path.join(
+        figures_path,
+        "sales_distribution_of_product_categories_by_price_no_accessories.png",
+    )
+)
+
+ax = sns.barplot(
+    "category",
+    "volume_perc",
+    hue="Company",
+    data=data_sales[data_sales.category.isin(volume_cats_to_plot_no_accessories)],
+)
+ax.set_xlabel("Product Category")
+ax.set(ylabel="Percent of Sales")
+plt.title("Product Categories as Percent of Sales by Volume")
+plt.xticks(rotation=90)
+plt.legend(loc=1)
+plt.show()
+plt.savefig(
+    os.path.join(
+        figures_path,
+        "sales_distribution_of_product_categories_by_volume_no_accessories.png",
+    )
 )
 
 # Plotting product category share of Blackwell Profits
