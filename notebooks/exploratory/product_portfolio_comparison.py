@@ -326,13 +326,13 @@ ax.set(ylabel="% of Sales")
 plt.title("Product Categories as % of Sales by Price")
 plt.xticks(rotation=90)
 plt.legend(loc=1)
-plt.show()
 plt.savefig(
     os.path.join(
         figures_path,
         "sales_distribution_of_product_categories_by_price_no_accessories.png",
     )
 )
+plt.show()
 
 ax = sns.barplot(
     "category",
@@ -345,13 +345,13 @@ ax.set(ylabel="% of Sales")
 plt.title("Product Categories as % of Sales by Volume")
 plt.xticks(rotation=90)
 plt.legend(loc=1)
-plt.show()
 plt.savefig(
     os.path.join(
         figures_path,
         "sales_distribution_of_product_categories_by_volume_no_accessories.png",
     )
 )
+plt.show()
 
 # Plotting product category share of Blackwell Profits
 ax = sns.barplot(
@@ -366,10 +366,10 @@ ax.set(ylabel="% of Profits")
 plt.title("Product Categories Share of Blackwell Profits")
 plt.xticks(rotation=90)
 plt.legend(loc=1)
-plt.show()
 plt.savefig(
     os.path.join(figures_path, "blackwell_profits_share_by_product_category.png")
 )
+plt.show()
 
 # Plotting Blackwell individual product profitability distribution by category
 ax = sns.swarmplot(
@@ -381,12 +381,12 @@ ax.set_ylim([0, 600])
 plt.title("Blackwell Product Profits by Product Category")
 plt.xticks(rotation=90)
 plt.legend().remove()
-plt.show()
 plt.savefig(
     os.path.join(
         figures_path, "blackwell_product_profitability_distribution_by_category.png"
     )
 )
+plt.show()
 
 # Plotting Blackwell individual product profitability distribution by category
 ax = sns.swarmplot("category", "price", hue="company", data=data_product_prices)
@@ -396,12 +396,12 @@ ax.set_ylim([0, 7600])
 plt.title("Distribution of Product Prices by Category and Company")
 plt.xticks(rotation=90)
 plt.legend(loc=1)
-plt.show()
 plt.savefig(
     os.path.join(
         figures_path, "product_prices_distribution_by_category_and_company.png"
     )
 )
+plt.show()
 
 
 #%%
