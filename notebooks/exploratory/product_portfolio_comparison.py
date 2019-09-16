@@ -124,7 +124,7 @@ data_electronidex[
 
 #%%
 
-# calculating total price of items taking into amount the quantity of items
+# calculating total price of items taking into account the amount of items
 data_electronidex["price"] = (
     data_electronidex["product_quantity"] * data_electronidex["unit_price"]
 )
@@ -135,7 +135,7 @@ data_electronidex.drop(columns=["sku", "unit_price"], inplace=True)
 
 #%%
 
-# Cleaning electronindex data
+# Cleaning Blackwell data
 
 # keeping only interesting columns
 data_blackwell = data_blackwell[["ProductType", "Price", "Volume", "ProfitMargin"]]
@@ -144,6 +144,9 @@ data_blackwell = data_blackwell[["ProductType", "Price", "Volume", "ProfitMargin
 data_blackwell["Price_total"] = data_blackwell["Price"] * data_blackwell["Volume"]
 data_blackwell["Profit_total"] = (
     data_blackwell["Price"] * data_blackwell["Volume"] * data_blackwell["ProfitMargin"]
+)
+data_blackwell["Profit_per_unit"] = (
+    data_blackwell["Price"] * data_blackwell["ProfitMargin"]
 )
 
 # Dropping the Extended warranties as the information from these # seems false and is also in general not that interesting
@@ -161,10 +164,11 @@ data_electronidex_sales = data_electronidex.groupby(["category"], as_index=False
     ["product_quantity", "price"]
 ].sum()
 
-data_blackwell_sales = data_blackwell.groupby(["ProductType"], as_index=False).sum()
+data_blackwell_sales = data_blackwell.groupby(["ProductType"], as_index=False)[
+    "Volume", "Price_total", "Profit_total"
+].sum()
 
 #%%
-
 
 data_electronidex_sales["product_quantity"] = (
     data_electronidex_sales["product_quantity"]
@@ -254,8 +258,8 @@ ax = sns.barplot(
     data=data_sales[data_sales.category.isin(price_cats_to_plot)],
 )
 ax.set_xlabel("Product Category")
-ax.set(ylabel="Percent of Sales")
-plt.title("Product Categories as Percent of Sales by Price")
+ax.set(ylabel="% of Sales")
+plt.title("Product Categories as % of Sales by Price")
 plt.xticks(rotation=90)
 plt.legend(loc=1)
 plt.show()
@@ -270,8 +274,8 @@ ax = sns.barplot(
     data=data_sales[data_sales.category.isin(volume_cats_to_plot)],
 )
 ax.set_xlabel("Product Category")
-ax.set(ylabel="Percent of Sales")
-plt.title("Product Categories as Percent of Sales by Volume")
+ax.set(ylabel="% of Sales")
+plt.title("Product Categories as % of Sales by Volume")
 plt.xticks(rotation=90)
 plt.legend(loc=1)
 plt.show()
@@ -291,8 +295,8 @@ ax = sns.barplot(
     data=data_sales[data_sales.category.isin(price_cats_to_plot_no_accessories)],
 )
 ax.set_xlabel("Product Category")
-ax.set(ylabel="Percent of Sales")
-plt.title("Product Categories as Percent of Sales by Price")
+ax.set(ylabel="% of Sales")
+plt.title("Product Categories as % of Sales by Price")
 plt.xticks(rotation=90)
 plt.legend(loc=1)
 plt.show()
@@ -310,8 +314,8 @@ ax = sns.barplot(
     data=data_sales[data_sales.category.isin(volume_cats_to_plot_no_accessories)],
 )
 ax.set_xlabel("Product Category")
-ax.set(ylabel="Percent of Sales")
-plt.title("Product Categories as Percent of Sales by Volume")
+ax.set(ylabel="% of Sales")
+plt.title("Product Categories as % of Sales by Volume")
 plt.xticks(rotation=90)
 plt.legend(loc=1)
 plt.show()
@@ -331,7 +335,7 @@ ax = sns.barplot(
     ),
 )
 ax.set_xlabel("Product Category")
-ax.set(ylabel="Percent of Profits")
+ax.set(ylabel="% of Profits")
 plt.title("Product Categories Share of Blackwell Profits")
 plt.xticks(rotation=90)
 plt.legend(loc=1)
@@ -339,6 +343,24 @@ plt.show()
 plt.savefig(
     os.path.join(figures_path, "blackwell_profits_share_by_product_category.png")
 )
+
+# Plotting Blackwell individual product profitability distribution by category
+ax = sns.swarmplot(
+    data_blackwell.ProductType, data_blackwell.Profit_per_unit, palette="Paired"
+)
+ax.set_xlabel("Product Category")
+ax.set(ylabel="Profit per Product Sold")
+# ax.set_ylim([0, 2500])
+plt.title("Product Profit Distribution by Product Category")
+plt.xticks(rotation=90)
+plt.legend().remove()
+plt.show()
+plt.savefig(
+    os.path.join(
+        figures_path, "blackwell_product_profitability_distribution_by_category.png"
+    )
+)
+
 
 #%%
 
