@@ -243,7 +243,7 @@ blackwell_categories_vol = data_sales[
     (data_sales.Company == "Blackwell") & (data_sales.volume_perc >= 1)
 ].category
 electronindex_categories_vol = data_sales[
-    (data_sales.Company == "Electronindex") & (data_sales.volume_perc >= 1)
+    (data_sales.Company == "Electronidex") & (data_sales.volume_perc >= 1)
 ].category
 
 volume_cats_to_plot = (
