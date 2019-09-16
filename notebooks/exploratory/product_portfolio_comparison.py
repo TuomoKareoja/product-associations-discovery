@@ -19,7 +19,7 @@ InteractiveShell.ast_node_interactivity = "all"
 raw_path = os.path.join("data", "raw")
 clean_path = os.path.join("data", "clean")
 
-# Loading Electonindex data
+# Loading Electronidex data
 data_orders = pd.read_csv(
     os.path.join(raw_path, "orders_translated.csv"), sep=";", decimal=","
 )
@@ -129,6 +129,11 @@ data_electronidex["price"] = (
     data_electronidex["product_quantity"] * data_electronidex["unit_price"]
 )
 
+# creating a separate dataset for electronidex product prices
+data_electronidex_products_medprice = data_electronidex.groupby(
+    ["sku", "category"], as_index=False
+)["unit_price"].median()
+
 # dropping the now unnecessary sku and unit price columns
 data_electronidex.drop(columns=["sku", "unit_price"], inplace=True)
 
@@ -153,7 +158,7 @@ data_blackwell["Profit_per_unit"] = (
 data_blackwell.query("ProductType != 'ExtendedWarranty'", inplace=True)
 
 # Dropping original price and profit margin
-data_blackwell.drop(columns=["Price", "ProfitMargin"], inplace=True)
+data_blackwell.drop(columns=["ProfitMargin"], inplace=True)
 
 
 #%%
@@ -248,6 +253,28 @@ volume_cats_to_plot = (
     .drop_duplicates()
     .tolist()
 )
+
+# combine data of product prices by category between the two firms
+
+data_electronidex_product_prices = data_electronidex_products_medprice[
+    ["category", "unit_price"]
+]
+data_blackwell_product_prices = data_blackwell[["ProductType", "Price"]]
+
+data_electronidex_product_prices.columns = ["category", "price"]
+data_blackwell_product_prices.columns = ["category", "price"]
+
+data_electronidex_product_prices["company"] = "Electronidex"
+data_blackwell_product_prices["company"] = "Blackwell"
+
+data_product_prices = pd.concat(
+    [data_electronidex_product_prices, data_blackwell_product_prices]
+)
+
+data_product_prices.query("category != 'Unknown'", inplace=True)
+data_product_prices.query("category != 'Accessories'", inplace=True)
+data_product_prices.query("category != 'Other'", inplace=True)
+
 
 #%%
 
@@ -350,14 +377,29 @@ ax = sns.swarmplot(
 )
 ax.set_xlabel("Product Category")
 ax.set(ylabel="Profit per Product Sold")
-# ax.set_ylim([0, 2500])
-plt.title("Product Profit Distribution by Product Category")
+ax.set_ylim([0, 600])
+plt.title("Blackwell Product Profits by Product Category")
 plt.xticks(rotation=90)
 plt.legend().remove()
 plt.show()
 plt.savefig(
     os.path.join(
         figures_path, "blackwell_product_profitability_distribution_by_category.png"
+    )
+)
+
+# Plotting Blackwell individual product profitability distribution by category
+ax = sns.swarmplot("category", "price", hue="company", data=data_product_prices)
+ax.set_xlabel("Product Category")
+ax.set(ylabel="Product Price")
+ax.set_ylim([0, 7600])
+plt.title("Distribution of Product Prices by Category and Company")
+plt.xticks(rotation=90)
+plt.legend(loc=1)
+plt.show()
+plt.savefig(
+    os.path.join(
+        figures_path, "product_prices_distribution_by_category_and_company.png"
     )
 )
 
