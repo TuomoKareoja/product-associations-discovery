@@ -10,8 +10,6 @@ import datetime
 import copy
 from IPython.core.interactiveshell import InteractiveShell
 
-# Setting styles
-sns.set(style="whitegrid", color_codes=True)
 InteractiveShell.ast_node_interactivity = "all"
 
 #%%
@@ -278,6 +276,9 @@ data_product_prices.query("category != 'Other'", inplace=True)
 
 #%%
 
+# Setting styles and appropriate figure size
+sns.set(rc={"figure.figsize": (9, 7)}, style="whitegrid", color_codes=True)
+
 ax = sns.barplot(
     "category",
     "price_perc",
@@ -289,9 +290,11 @@ ax.set(ylabel="% of Sales")
 plt.title("Product Categories as % of Sales by Price")
 plt.xticks(rotation=90)
 plt.legend(loc=1)
+plt.tight_layout()
 plt.show()
 plt.savefig(
-    os.path.join(figures_path, "sales_distribution_of_product_categories_by_price.png")
+    os.path.join(figures_path, "sales_distribution_of_product_categories_by_price.png"),
+    dpi=300,
 )
 
 ax = sns.barplot(
@@ -305,9 +308,13 @@ ax.set(ylabel="% of Sales")
 plt.title("Product Categories as % of Sales by Volume")
 plt.xticks(rotation=90)
 plt.legend(loc=1)
+plt.tight_layout()
 plt.show()
 plt.savefig(
-    os.path.join(figures_path, "sales_distribution_of_product_categories_by_volume.png")
+    os.path.join(
+        figures_path, "sales_distribution_of_product_categories_by_volume.png"
+    ),
+    dpi=300,
 )
 
 price_cats_to_plot_no_accessories = price_cats_to_plot.copy()
@@ -326,11 +333,13 @@ ax.set(ylabel="% of Sales")
 plt.title("Product Categories as % of Sales by Price")
 plt.xticks(rotation=90)
 plt.legend(loc=1)
+plt.tight_layout()
 plt.savefig(
     os.path.join(
         figures_path,
         "sales_distribution_of_product_categories_by_price_no_accessories.png",
-    )
+    ),
+    dpi=300,
 )
 plt.show()
 
@@ -345,11 +354,13 @@ ax.set(ylabel="% of Sales")
 plt.title("Product Categories as % of Sales by Volume")
 plt.xticks(rotation=90)
 plt.legend(loc=1)
+plt.tight_layout()
 plt.savefig(
     os.path.join(
         figures_path,
         "sales_distribution_of_product_categories_by_volume_no_accessories.png",
-    )
+    ),
+    dpi=300,
 )
 plt.show()
 
@@ -366,8 +377,10 @@ ax.set(ylabel="% of Profits")
 plt.title("Product Categories Share of Blackwell Profits")
 plt.xticks(rotation=90)
 plt.legend(loc=1)
+plt.tight_layout()
 plt.savefig(
-    os.path.join(figures_path, "blackwell_profits_share_by_product_category.png")
+    os.path.join(figures_path, "blackwell_profits_share_by_product_category.png"),
+    dpi=300,
 )
 plt.show()
 
@@ -381,10 +394,12 @@ ax.set_ylim([0, 600])
 plt.title("Blackwell Product Profits by Product Category")
 plt.xticks(rotation=90)
 plt.legend().remove()
+plt.tight_layout()
 plt.savefig(
     os.path.join(
         figures_path, "blackwell_product_profitability_distribution_by_category.png"
-    )
+    ),
+    dpi=300,
 )
 plt.show()
 
@@ -396,10 +411,12 @@ ax.set_ylim([0, 7600])
 plt.title("Distribution of Product Prices by Category and Company")
 plt.xticks(rotation=90)
 plt.legend(loc=1)
+plt.tight_layout()
 plt.savefig(
     os.path.join(
         figures_path, "product_prices_distribution_by_category_and_company.png"
-    )
+    ),
+    dpi=300,
 )
 plt.show()
 
