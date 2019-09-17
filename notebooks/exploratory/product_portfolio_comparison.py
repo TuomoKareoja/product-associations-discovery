@@ -83,7 +83,7 @@ data_electronidex.category.fillna("Unknown", inplace=True)
 data_electronidex.query("category != 'ExtendedWarranty'", inplace=True)
 
 # dropping the now unnecesary id_order column
-data_electronidex.drop(columns=["id_order"], inplace=True)
+# data_electronidex.drop(columns=["id_order"], inplace=True)
 
 #%%
 
