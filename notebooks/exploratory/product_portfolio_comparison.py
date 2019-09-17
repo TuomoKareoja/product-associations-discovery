@@ -151,6 +151,9 @@ data_blackwell["Profit_total"] = (
 data_blackwell["Profit_per_unit"] = (
     data_blackwell["Price"] * data_blackwell["ProfitMargin"]
 )
+data_blackwell["Profit_perc_share"] = (
+    data_blackwell["Profit_total"] * 100 / data_blackwell["Profit_total"].sum()
+).round(1)
 
 # Dropping the Extended warranties as the information from these # seems false and is also in general not that interesting
 data_blackwell.query("ProductType != 'ExtendedWarranty'", inplace=True)
@@ -222,8 +225,6 @@ data_sales.query("category != 'Unknown'", inplace=True)
 
 #%%
 
-figures_path = os.path.join("reports", "figures")
-
 # plotting only categories where it forms at least 2 % of one companies sales
 
 blackwell_categories_price = data_sales[
@@ -278,6 +279,9 @@ data_product_prices.query("category != 'Other'", inplace=True)
 
 # Setting styles and appropriate figure size
 sns.set(rc={"figure.figsize": (9, 7)}, style="whitegrid", color_codes=True)
+
+# save path for all figures
+figures_path = os.path.join("reports", "figures")
 
 ax = sns.barplot(
     "category",
@@ -386,7 +390,7 @@ plt.show()
 
 # Plotting Blackwell individual product profitability distribution by category
 ax = sns.swarmplot(
-    data_blackwell.ProductType, data_blackwell.Profit_per_unit, palette="Paired"
+    data_blackwell.ProductType, data_blackwell.Profit_per_unit, palette="colorblind"
 )
 ax.set_xlabel("Product Category")
 ax.set(ylabel="Profit per Product Sold")
@@ -403,7 +407,44 @@ plt.savefig(
 )
 plt.show()
 
-# Plotting Blackwell individual product profitability distribution by category
+# Plotting Blackwell individual product percent of profits by category
+ax = sns.swarmplot(
+    data_blackwell.ProductType, data_blackwell.Profit_perc_share, palette="colorblind"
+)
+ax.set_xlabel("Product Category")
+ax.set_ylabel("% Share of Total Company Profits")
+ax.set_ylim([0, 14])
+plt.title("Blackwell Product Share of Profits by Category")
+plt.xticks(rotation=90)
+plt.legend().remove()
+plt.tight_layout()
+plt.savefig(
+    os.path.join(figures_path, "blackwell_products_share_of_profits.png"), dpi=300
+)
+plt.show()
+
+# Plotting Blackwell individual product percent of profits against price by category
+ax = sns.scatterplot(
+    data_blackwell.Price,
+    data_blackwell.Profit_perc_share,
+    hue=data_blackwell.ProductType,
+    palette="colorblind",
+)
+ax.set_xlabel("Product Price")
+ax.set_ylabel("% Share of Total Company Profits")
+ax.set_xlim([0, 3000])
+ax.set_ylim([0, 14])
+plt.title("Blackwell Products Price vs Profits by Category")
+plt.xticks(rotation=90)
+plt.legend(loc=1)
+plt.tight_layout()
+plt.savefig(
+    os.path.join(figures_path, "blackwell_products_price_vs_profits.png"), dpi=300
+)
+plt.show()
+
+
+# Plotting Blackwell and Electronidex individual product prices by category
 ax = sns.swarmplot("category", "price", hue="company", data=data_product_prices)
 ax.set_xlabel("Product Category")
 ax.set(ylabel="Product Price")
